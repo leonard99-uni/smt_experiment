@@ -5,7 +5,7 @@ import {
     SET_SEED
 } from "../../N-of-1-Experimentation/modules/Experimentation/Experimentation.js";
 import { Task } from "../../N-of-1-Experimentation/modules/Experimentation/Task.js";
-import { Code_Generation_Task } from "./code/Feature_count_states_2.js";
+import { Code_Generation_Task, get_tasks_explanation } from "./code/Feature_count_states_2.js";
 
 let SEED = "39";
 
@@ -52,6 +52,21 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
             ),
 
             () => writer.print_string_on_stage(
+                "The following examples demonstrate key <strong>React</strong> features such as <code>useState</code> and component props.<br><br>" +
+                "The <code>useState</code> Hook is used to add state to a functional component. For example:<br>" +
+                "<code>const [count, setCount] = useState(0);</code><br><br>" +
+                "This initializes a state variable named <code>count</code> and a corresponding function, <code>setCount</code>, for updating its value.<br><br>" +
+                "While direct usage of these features is not required, recognizing their purpose will help in understanding the code examples provided."
+            ),
+
+            () => writer.print_string_on_stage(
+                "Throughout the examples, there are often function types written like this:<br><br>" +
+                "<code>a: () => void</code><br><br>" +
+                "This means <code>a</code> is a function that takes no arguments and returns nothing (i.e., <code>void</code>).<br><br>" +
+                "Although this may appear in interfaces or stores, please note that <strong>functions like this are not considered state</strong> and should not be included in the experiment."
+            ),
+
+            () => writer.print_string_on_stage(
                 "<strong>Context</strong> is a built-in feature of React that allows you to share state across components without passing props manually.<br><br>" +
                 "In this experiment, check if each state is:<br>" +
                 "1. Declared in the interface, <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
@@ -77,16 +92,16 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
 
                 "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
                 "&nbsp;&nbsp;return (<br>" +
-                "&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b }}&gt;<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c }}&gt;<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{children}" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TestContext.Provider&gt;<br>" +
                 "&nbsp;&nbsp;)<br>" +
                 "}</td></tr>" +
 
                 "</table></code>" +
-                "<br> In this case <strong>'a'</strong> is a state that meets all three criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>interface</code> but not fulfilling the other conditions, therefore it should <strong>NOT</strong> be counted!" +
+                "<br> In this case <strong>'a'</strong> is a state that meets all three criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>interface</code> and passed in the value of the <code>provider</code> but not fulfilling the other conditions, therefore it should <strong>NOT</strong> be counted!" +
                 "<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared, created and passed in the value of the provider, but it is a function and not a state, therefore it is not to be counted aswell.<br><br>" +
-                "<strong>Only count states that meet all three criteria and ignore any functions as they are not states.</strong>"
+                "<strong>Only count states that meet all three criteria and ignore any functions.</strong>"
             ),
 
             () => writer.print_string_on_stage("" +
@@ -121,7 +136,7 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 "</table></code>" +
                 "<br> In this case <strong>'a'</strong> is a state that meets both criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>type</code> but not fulfilling the other condition, therefore it should <strong>NOT</strong> be counted!" +
                 "<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared in the <code>type</code>, but it is a function and not a state, therefore it is not to be counted aswell.<br><br>" +
-                "<strong>Only count states that meet both criteria and ignore any functions/actions as they are not states.</strong>"
+                "<strong>Only count states that meet both criteria and ignore any functions/actions.</strong>"
             ),
 
             () => writer.print_string_on_stage(
@@ -130,7 +145,8 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 "1. Be listed in the <code>interface</code> definition, and <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
                 "2. Be present in the <code>initialState</code> <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
                 "Some states may be declared but never initialized, or used without being typed. These should not be counted.<br><br>" +
-                "The actions inside the <code>reducers</code> can be ignored for this experiment.<br><br>"  +
+                //"The actions inside the <code>reducers</code> can be ignored for this experiment.<br><br>"  +
+                "The <code>code</code> inside the <span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span> box can be ignored for this experiment.<br><br>" +
 
                 "<table style='border: 1px solid black;'>" +
                 "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
@@ -149,13 +165,33 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 "&nbsp;&nbsp;name: 'testState',<br>" +
                 "&nbsp;&nbsp;initialState,<br>" +
                 "&nbsp;&nbsp;reducers: {<br>" +
+                //"&nbsp;&nbsp;&nbsp;&nbsp;...<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;z: (state) => {<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state.a = 1;<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;},<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;...<br>" +
                 "&nbsp;&nbsp;},<br>" +
-                "});</td></tr>" +
+                "});<br>" +
+                "export const { a, b, z } = testSlice.actions;<br>" +
+                "export default testSlice.reducer<br>" +
+                "<br>" +
+                "export const store = configureStore({\n<br>" +
+                "&nbsp;&nbsp;reducer: {<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;testSlice: testSlice.reducer<br>" +
+                "&nbsp;&nbsp;},<br>" +
+                "})<br>" +
+                "<br>" +
+                "export type RootState = ReturnType&lt;typeof store.getState&gt;<br>" +
+                "export type AppDispatch = typeof store.dispatch;<br>" +
+                "<br>" +
+                "export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();<br>" +
+                "export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();<br>" +
+                "</td></tr>" +
+
 
                 "</table></code>" +
                 "<br> In this case <strong>'a'</strong> is a state that meets both criteria and can be counted, while <strong>'b'</strong> is only declared in the <code>interface</code> but not fulfilling the other condition, therefore it should <strong>NOT</strong> be counted!<br><br>" +
-                "<strong>Only count states that meet both criteria and ignore any functions/actions as they are not states.</strong>"
+                "<strong>Only count states that meet both criteria and ignore any functions/actions.</strong>"
             ),
 
             () => writer.print_string_on_stage(
@@ -177,8 +213,8 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 "<code></td></tr>" +
 
                 "<tr><td style='border: 3px solid red; padding: 5px;'><code>" +
-                "const initialState: testState = {<br>" +
                 "const b = atom(<br>" +
+                "&nbsp;&nbsp;null," +
                 "&nbsp;&nbsp;(get, set) => {<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;set(a, 10 )<br>" +
                 "&nbsp;&nbsp;}<br>" +
@@ -265,7 +301,8 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
             let task: Code_Generation_Task = new Code_Generation_Task(false, smt, amt);
             //let task: Code_Generation_Task = random_array_element(tasks["" + t.treatment_value("State_Management_Tool")]);
             let code = task.generate_code();
-
+            let explanation = get_tasks_explanation(smt);
+            console.log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n explanation: ", explanation);
 
 
             t.has_pre_task_description = true;
@@ -275,6 +312,7 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 //let smt = task.stateManagementTool;
                 const cleaned = String(smt).replace(/_Error$/, "");
                 writer.print_string_on_stage("The next State Management Tool will be: " + cleaned);
+                writer.print_string_on_stage(explanation);
                 writer.print_string_on_stage("Press [Return].");
             }
 
@@ -287,7 +325,19 @@ let experiment_configuration_function = (writer: Experiment_Output_Writer) => {
                 writer.clear_stage();
 
                 //writer.print_html_on_stage(task.generate_code());
-                writer.print_string_on_stage("<div class='sourcecode'>" + code + "</div>");
+                //writer.print_string_on_stage("<div class='sourcecode'>" + code + "</div>");
+                writer.print_string_on_stage(`
+                  <table style="width:100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="width: 50%; vertical-align: top; border-right: 1px solid #ccc; padding: 10px;">
+                        <div class='sourcecode'>${code}</div>
+                      </td>
+                      <td style="width: 50%; vertical-align: top; padding: 10px;">
+                        <div class='explanation'>${explanation}</div>
+                      </td>
+                    </tr>
+                  </table>
+                `);
                 t.expected_answer = task.answer;
             };
 

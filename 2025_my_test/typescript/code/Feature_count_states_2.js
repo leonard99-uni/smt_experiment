@@ -179,7 +179,10 @@ class Simple_Code_Writer extends Code_Writer {
                 newLine = newLine.replace(/\$\+\-/g, operator);
                 // Replace first $state with stateValue1, second with stateValue2
                 let stateCount = 0;
-                if (smt == "Context") {
+                //if (smt == "Context") {
+                console.log("-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\nsmt is: ", smt);
+                if (smt.includes("Context")) {
+                    console.log("/\n/\n/\n/\n/\n/\n/\n in here");
                     newLine = newLine.replace(/\$state/g, () => {
                         stateCount++;
                         console.log("stateValue1", stateValue1);
@@ -1124,6 +1127,137 @@ export class Code_Generation_Task {
         //console.log(this.error_position());
         console.log(this.hasError);
         //this.error_position();
+    }
+}
+export function get_tasks_explanation(smt) {
+    const cleaned_smt = String(smt).replace(/_Error$/, "");
+    switch (cleaned_smt) {
+        case "Context":
+            return "<strong>Context</strong> is a built-in feature of React that allows you to share state across components without passing props manually.<br><br>" +
+                "In this experiment, check if each state is:<br>" +
+                "1. Declared in the interface, <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
+                "2. created with <code>useState()</code>, and <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
+                "3. Passed into the <code>value</code> of the context provider. <span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span><br><br>" +
+                "Ignore any functions inside the <code>interface</code> as they are not states. The code does not have to work." +
+                "<table style='border: 1px solid black;'>" +
+                "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
+                "interface testType {<br>&nbsp;&nbsp;a: number,<br>&nbsp;&nbsp;b: () => void,<br>&nbsp;&nbsp;c: number,<br>}</code></td></tr>" +
+                "<tr><td style='border: 3px solid darkgreen; padding: 5px;'><code>" +
+                "export const TestProvider = ({children}) => {<br>&nbsp;&nbsp;const [a, setA] = useState<number>(0);<br>&nbsp;&nbsp;const b = () => {<br>&nbsp;&nbsp;&nbsp;&nbsp;setD(10);<br>&nbsp;&nbsp;};<br>}</code></td></tr>" +
+                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
+                "&nbsp;&nbsp;return (<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c, d }}&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{children}" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TestContext.Provider&gt;<br>&nbsp;&nbsp;)</code></td></tr>" +
+                "</table>" +
+                //"<br> In this case <strong>'a'</strong> is a state that meets all three criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>interface</code> and passed in the value of the <code>provider</code> but not fulfilling the other conditions, therefore it should <strong>NOT</strong> be counted!" +
+                //"<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared, created and passed in the value of the provider, but it is a function and not a state, therefore it is not to be counted as well.<br><br>" +
+                "<br> <strong>'a'</strong> can be counted!" +
+                "<br> <strong>'b'</strong> can be <strong>NOT</strong> counted, since it is function and not a state!" +
+                "<br> <strong>'c'</strong> can be <strong>NOT</strong> counted, since it does not fulfill condition 2!" +
+                "<br> <strong>'d'</strong> can be <strong>NOT</strong> counted, since it does not fulfill condition 1 and 2!" +
+                "<br><br><strong>Only count states that meet all three criteria and ignore any functions as they are not states.</strong>";
+        case "Zustand":
+            return "In <strong>Zustand</strong>, you define a store using the <code>create()</code> function. The store allows global state management and includes:<br>" +
+                "<ul><li>Simple key-value pairs for state</li><li>Functions (methods) to modify the state</li></ul>" +
+                "In this experiment, count every state that is:<br>" +
+                "1. Declared in the <code>type</code>, and <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
+                "2. Implemented correctly inside the store function. <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
+                "Some states may be declared but never initialized, or used without being typed. These should not be counted.<br><br>" +
+                "Ignore any functions inside the store as they are not states.<br><br>" +
+                "<table style='border: 1px solid black;'>" +
+                "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
+                "type testState = {<br>&nbsp;&nbsp;a: number,<br>&nbsp;&nbsp;b: () => void,<br>&nbsp;&nbsp;c: number,<br>}</code></td></tr>" +
+                "<tr><td style='border: 3px solid darkgreen; padding: 5px;'><code>" +
+                "export const useTestState = create<testState>()((set) => ({<br>" +
+                "&nbsp;&nbsp;a: 0,<br>&nbsp;&nbsp;b: () => {<br>&nbsp;&nbsp;&nbsp;&nbsp;set((state) => ({ a: 10 }))<br>&nbsp;&nbsp;}<br>}))</code></td></tr>" +
+                "</table>" +
+                //"<br> In this case <strong>'a'</strong> is a state that meets both criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>type</code> but not fulfilling the other condition, therefore it should <strong>NOT</strong> be counted!" +
+                //"<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared in the <code>type</code>, but it is a function and not a state, therefore it is not to be counted as well.<br><br>" +
+                "<br> <strong>'a'</strong> can be counted!" +
+                "<br> <strong>'b'</strong> can be <strong>NOT</strong> counted, since it is function and not a state!" +
+                "<br> <strong>'c'</strong> can be <strong>NOT</strong> counted, since it does not fulfill condition 2!" +
+                "<br><br><strong>Only count states that meet both criteria and ignore any functions/actions as they are not states.</strong>";
+        case "Redux":
+            /*            return "In <strong>Redux</strong>, state is stored in a central object called the <code>initialState</code> and updated using <code>reducers</code> and the <code>actions</code> defined in it.<br><br>" +
+                            "To count a valid state in this experiment, it must:<br>" +
+                            "1. Be listed in the <code>interface</code> definition, and <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
+                            "2. Be present in the <code>initialState</code> <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br><br>" +
+                            "The actions inside the <code>reducers</code> can be ignored for this experiment.<br><br>" +
+                            "<table style='border: 1px solid black;'>" +
+                            "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
+                            "interface testState {<br>&nbsp;&nbsp;a: number,<br>&nbsp;&nbsp;b: number,<br>}</code></td></tr>" +
+                            "<tr><td style='border: 3px solid darkgreen; padding: 5px;'><code>" +
+                            "const initialState: testState = {<br>&nbsp;&nbsp;a: 0<br>}</code></td></tr>" +
+                            "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
+                            "export const testSlice = createSlice({<br>&nbsp;&nbsp;name: 'testState',<br>&nbsp;&nbsp;initialState,<br>&nbsp;&nbsp;reducers: { ... }<br>});</code></td></tr>" +
+                            "</table>" +
+                            "<br> In this case <strong>'a'</strong> is a state that meets both criteria and can be counted, while <strong>'b'</strong> is only declared in the <code>interface</code> but not initialized, so it should <strong>NOT</strong> be counted!<br><br>" +
+                            "<strong>Only count states that meet both criteria and ignore any functions/actions as they are not states.</strong>";
+            */
+            return "In <strong>Redux</strong>, state is stored in a central object called the <code>initialState</code> and updated using <code>reducers</code> and the <code>actions</code> defined in it.<br><br>" +
+                "To count a valid state in this experiment, it must:<br>" +
+                "1. Be listed in the <code>interface</code> definition, and <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
+                "2. Be present in the <code>initialState</code> <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
+                "Some states may be declared but never initialized, or used without being typed. These should not be counted.<br><br>" +
+                "The <code>code</code> inside the <span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span> box can be ignored for this experiment.<br><br>" +
+                "<table style='border: 1px solid black;'>" +
+                "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
+                "interface testState {<br>" +
+                "&nbsp;&nbsp;a: number,<br>" +
+                "&nbsp;&nbsp;b: number,<br>" +
+                "}</td></tr>" +
+                "<tr><td style='border: 3px solid darkgreen; padding: 5px;'><code>" +
+                "const initialState: testState = {<br>" +
+                "&nbsp;&nbsp;a: 0<br>" +
+                "}</td></tr>" +
+                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
+                "export const testSlice = createSlice({<br>" +
+                "&nbsp;&nbsp;name: 'testState',<br>" +
+                "&nbsp;&nbsp;initialState,<br>" +
+                "&nbsp;&nbsp;reducers: {<br>" +
+                //"&nbsp;&nbsp;&nbsp;&nbsp;...<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;z: (state) => {<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state.a = 1;<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;},<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;...<br>" +
+                "&nbsp;&nbsp;},<br>" +
+                "});<br>" +
+                "export const { a, b, z } = testSlice.actions;<br>" +
+                "export default testSlice.reducer<br>" +
+                "<br>" +
+                "export const store = configureStore({\n<br>" +
+                "&nbsp;&nbsp;reducer: {<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;testSlice: testSlice.reducer<br>" +
+                "&nbsp;&nbsp;},<br>" +
+                "})<br>" +
+                "<br>" +
+                "export type RootState = ReturnType&lt;typeof store.getState&gt;<br>" +
+                "export type AppDispatch = typeof store.dispatch;<br>" +
+                "<br>" +
+                "export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();<br>" +
+                "export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();<br>" +
+                "</td></tr>" +
+                "</table></code>" +
+                //"<br> In this case <strong>'a'</strong> is a state that meets both criteria and can be counted, while <strong>'b'</strong> is only declared in the <code>interface</code> but not fulfilling the other condition, therefore it should <strong>NOT</strong> be counted!<br><br>" +
+                "<br> <strong>'a'</strong> can be counted!" +
+                "<br> <strong>'b'</strong> can be <strong>NOT</strong> counted, since it is only declared in the interface!" +
+                "<br><br><strong>Only count states that meet both criteria and ignore any functions/actions.</strong>";
+        case "Jotai":
+            return "<strong>Jotai</strong> is a state management library for React that uses <em>atoms</em> as basic units of state.<br><br>" +
+                "Each atom is a standalone piece of state created using <code>atom()</code>.<br><br>" +
+                "Jotai does not use context, reducers, or slices — just simple atoms.<br><br>" +
+                "In this experiment, the task is to only count atoms that hold an actual value, which serve as a state.<span style='display:inline-block; width:12px; height:12px; background:green; margin-left:5px;'></span><br>" +
+                "Write-only atoms can be ignored.<span style='display:inline-block; width:12px; height:12px; background:red; margin-left:5px;'></span><br><br>" +
+                "<table style='border: 1px solid black;'>" +
+                "<tr><td style='border: 3px solid green; padding: 5px;'><code>const a = atom(0);</code></td></tr>" +
+                "<tr><td style='border: 3px solid red; padding: 5px;'><code>const b = atom(<br>&nbsp;&nbsp;null,<br>&nbsp;&nbsp;(get, set) => {<br>&nbsp;&nbsp;&nbsp;&nbsp;set(a, 10)<br>&nbsp;&nbsp;}<br>);</code></td></tr>" +
+                "</table>" +
+                //"<br> In this case <strong>'a'</strong> is an <code>atom</code> that serves as a state and can be counted!" +
+                //"<br> Contrary to <strong>'a'</strong>, <strong>'b'</strong> is a write-only <code>atom</code> and should therefore not be counted.<br><br>" +
+                "<br> <strong>'a'</strong> can be counted!" +
+                "<br> <strong>'b'</strong> can be <strong>NOT</strong> counted, since it is a write-only atom!" +
+                "<br><br><strong>Only count states that meet the criteria and ignore any write-only atoms.</strong>";
+        default:
+            return "No explanation available.";
     }
 }
 /*

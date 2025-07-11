@@ -12,3 +12,4 @@ export declare class Code_Generation_Task {
     response_text(): string;
     debug_help(t: Task): void;
 }
+export declare function get_tasks_explanation(smt: string): string;
