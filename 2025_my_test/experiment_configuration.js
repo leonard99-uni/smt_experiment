@@ -1152,14 +1152,14 @@ function get_tasks_explanation(smt) {
                 "In this experiment, check if each state is:<br>" +
                 "1. Declared in the interface, <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
                 "2. created with <code>useState()</code>, and <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
-                "3. Passed into the <code>value</code> of the context provider. <span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span><br><br>" +
+                "3. Passed into the <code>value</code> of the context provider. <span style='display:inline-block; width:12px; height:12px; background:aqua; margin-left:5px;'></span><br><br>" +
                 "Ignore any functions inside the <code>interface</code> as they are not states. The code does not have to work." +
                 "<table style='border: 1px solid black;'>" +
                 "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
                 "interface testType {<br>&nbsp;&nbsp;a: number,<br>&nbsp;&nbsp;b: () => void,<br>&nbsp;&nbsp;c: number,<br>}</code></td></tr>" +
                 "<tr><td style='border: 3px solid darkgreen; padding: 5px;'><code>" +
                 "export const TestProvider = ({children}) => {<br>&nbsp;&nbsp;const [a, setA] = useState<number>(0);<br>&nbsp;&nbsp;const b = () => {<br>&nbsp;&nbsp;&nbsp;&nbsp;setD(10);<br>&nbsp;&nbsp;};<br>}</code></td></tr>" +
-                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
+                "<tr><td style='border: 3px solid aqua; padding: 5px;'><code>" +
                 "&nbsp;&nbsp;return (<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c, d }}&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{children}" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TestContext.Provider&gt;<br>&nbsp;&nbsp;)</code></td></tr>" +
                 "</table>" +
@@ -1261,10 +1261,10 @@ function get_tasks_explanation(smt) {
                 "Each atom is a standalone piece of state created using <code>atom()</code>.<br><br>" +
                 "Jotai does not use context, reducers, or slices — just simple atoms.<br><br>" +
                 "In this experiment, the task is to only count atoms that hold an actual value, which serve as a state.<span style='display:inline-block; width:12px; height:12px; background:green; margin-left:5px;'></span><br>" +
-                "Write-only atoms can be ignored.<span style='display:inline-block; width:12px; height:12px; background:red; margin-left:5px;'></span><br><br>" +
+                "Write-only atoms can be ignored.<span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span><br><br>" +
                 "<table style='border: 1px solid black;'>" +
                 "<tr><td style='border: 3px solid green; padding: 5px;'><code>const a = atom(0);</code></td></tr>" +
-                "<tr><td style='border: 3px solid red; padding: 5px;'><code>const b = atom(<br>&nbsp;&nbsp;null,<br>&nbsp;&nbsp;(get, set) => {<br>&nbsp;&nbsp;&nbsp;&nbsp;set(a, 10)<br>&nbsp;&nbsp;}<br>);</code></td></tr>" +
+                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>const b = atom(<br>&nbsp;&nbsp;null,<br>&nbsp;&nbsp;(get, set) => {<br>&nbsp;&nbsp;&nbsp;&nbsp;set(a, 10)<br>&nbsp;&nbsp;}<br>);</code></td></tr>" +
                 "</table>" +
                 //"<br> In this case <strong>'a'</strong> is an <code>atom</code> that serves as a state and can be counted!" +
                 //"<br> Contrary to <strong>'a'</strong>, <strong>'b'</strong> is a write-only <code>atom</code> and should therefore not be counted.<br><br>" +
@@ -3953,7 +3953,7 @@ let experiment_configuration_function = (writer) => {
                 "In this experiment, check if each state is:<br>" +
                 "1. Declared in the interface, <span style='display:inline-block; width:12px; height:12px; background:darkblue; margin-left:5px;'></span><br>" +
                 "2. created with <code>useState()</code>, and <span style='display:inline-block; width:12px; height:12px; background:darkgreen; margin-left:5px;'></span><br>" +
-                "3. Passed into the <code>value</code> of the context provider. <span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span><br><br>" +
+                "3. Passed into the <code>value</code> of the context provider. <span style='display:inline-block; width:12px; height:12px; background:aqua; margin-left:5px;'></span><br><br>" +
                 "Ignore any functions inside the <code>interface</code> as they are not states." +
                 "<table style='border: 1px solid black;'>" +
                 "<tr><td style='border: 3px solid darkblue; padding: 5px;'><code>" +
@@ -3969,7 +3969,7 @@ let experiment_configuration_function = (writer) => {
                 "&nbsp;&nbsp;&nbsp;&nbsp;setA(10);<br>" +
                 "&nbsp;&nbsp;};<br>" +
                 "</td></tr>" +
-                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
+                "<tr><td style='border: 3px solid aqua; padding: 5px;'><code>" +
                 "&nbsp;&nbsp;return (<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c }}&gt;<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{children}" +
@@ -4062,7 +4062,7 @@ let experiment_configuration_function = (writer) => {
                 "Jotai does not use context, reducers, or slices — just simple atoms.<br><br>" +
                 //"In this experiment, the task is to only count atoms that hold an actual value (e.g., <code>const a = atom(0);</code>), which serve as a state.<br><br>" +
                 "In this experiment, the task is to only count atoms that hold an actual value, which serve as a state.<span style='display:inline-block; width:12px; height:12px; background:green; margin-left:5px;'></span><br>" +
-                "Write-only atoms can be ignored.<span style='display:inline-block; width:12px; height:12px; background:red; margin-left:5px;'></span><br><br>" +
+                "Write-only atoms can be ignored.<span style='display:inline-block; width:12px; height:12px; background:darkred; margin-left:5px;'></span><br><br>" +
                 //"Write-only atoms like this:<br><table style='border: 1px solid black;'><td style='padding: 5px;'><code>const b = atom(<br>" +
                 //"&nbsp;&nbsp;null,<br>" +
                 //"&nbsp;&nbsp;(get, set) => {<br>" +
@@ -4073,7 +4073,7 @@ let experiment_configuration_function = (writer) => {
                 "<tr><td style='border: 3px solid green; padding: 5px;'><code>" +
                 "const a = atom(0);<br>" +
                 "<code></td></tr>" +
-                "<tr><td style='border: 3px solid red; padding: 5px;'><code>" +
+                "<tr><td style='border: 3px solid darkred; padding: 5px;'><code>" +
                 "const b = atom(<br>" +
                 "&nbsp;&nbsp;null," +
                 "&nbsp;&nbsp;(get, set) => {<br>" +
