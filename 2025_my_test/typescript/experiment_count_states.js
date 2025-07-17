@@ -63,14 +63,15 @@ let experiment_configuration_function = (writer) => {
                 "</td></tr>" +
                 "<tr><td style='border: 3px solid aqua; padding: 5px;'><code>" +
                 "&nbsp;&nbsp;return (<br>" +
-                "&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c }}&gt;<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&lt;TestContext.Provider value={{ a, b, c, d }}&gt;<br>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{children}" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TestContext.Provider&gt;<br>" +
                 "&nbsp;&nbsp;)<br>" +
                 "}</td></tr>" +
                 "</table></code>" +
                 "<br> In this case <strong>'a'</strong> is a state that meets all three criteria and can be counted, while <strong>'c'</strong> is only declared in the <code>interface</code> and passed in the value of the <code>provider</code> but not fulfilling the other conditions, therefore it should <strong>NOT</strong> be counted!" +
-                "<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared, created and passed in the value of the provider, but it is a function and not a state, therefore it is not to be counted aswell.<br><br>" +
+                "<br> Contrary to <strong>'c'</strong>, <strong>'b'</strong> also is declared, created and passed in the value of the provider, but it is a function and not a state, therefore it is not to be counted aswell." +
+                "<br> Finally, <strong>'d'</strong> is only passed as a value of the provider but does not fulfill the other condition, therefore it should <strong>NOT</strong> be counted!<br><br>" +
                 "<strong>Only count states that meet all three criteria and ignore any functions.</strong>"),
             () => writer.print_string_on_stage("" +
                 "In <strong>Zustand</strong>, you define a store using the <code>create()</code> function. The store allows global state management and includes:<br>" +
