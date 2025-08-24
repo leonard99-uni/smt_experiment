@@ -4,7 +4,8 @@
   "main": "start_html.js",
   "type": "module",
   "scripts": {
-    "experiment": "webpack --config ./2025_my_test/webpack.config.cjs"
+    "experiment": "webpack --config ./2025_my_test/webpack.config.cjs",
+    "second_prelim": "webpack --config ./second_preliminary_experiment/webpack.config.cjs"
   },
   "dependencies": {
     "@types/node": "^20.6.0",
@@ -28,7 +29,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "webpack": "^5.100.1",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
   "_moduleAliases": {
